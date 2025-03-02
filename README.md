@@ -1,1 +1,1 @@
-cargo run -- --path <path to image> --color 
+cargo run -- --path (path to image) --color 
