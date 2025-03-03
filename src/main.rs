@@ -18,19 +18,38 @@ struct Args {
     ///define patterns
     #[arg(value_enum, short = 'a', long, default_value_t = AsciiPattern::Acerola)]
     pattern: AsciiPattern,
+    #[arg(short,long,action = ArgAction::SetTrue)]
+    invert: bool,
+    #[arg(short,long,action= ArgAction::SetTrue)]
+    edgedetec:bool,
+    #[arg(short,long,action= ArgAction::SetTrue)]
+    brighten:bool,
 }
 
 fn main() {
     let args = Args::parse();
-    let res = run(&args.path, args.color,args.pattern);
+    let res = run(&args.path, args.color,args.pattern, args.invert, args.edgedetec, args.brighten);
 
     let html = create_html(&res, args.color).to_html_string();
 
 fn create_html(ascii_art: &str, color: bool) -> String {
         let style = if color {
-            "body { background-color: black; font-family:Courier; white-space: pre;line-height: 7.5px; letter-spacing: 2.5px; font-size: 8px; }"
+            "body { background-color: black;
+                    font-family:Courier; 
+                    white-space: pre;
+                    line-height: 7.5px;
+                    letter-spacing: 2.5px;
+                    font-size: 8px; 
+            }"
         } else {
-            "body { background-color: black; font-family:Courier; white-space: pre;line-height: 7.5px; letter-spacing: 2.5px; color: white; font-size: 8px; }"
+            "body { background-color: black; 
+                    font-family:Courier; 
+                    white-space: pre;
+                    line-height: 7.5px;
+                    letter-spacing: 2.5px;
+                    color: #b5515a;
+                    font-size: 8px; 
+            }"
         };
     
         HtmlPage::new()
@@ -41,4 +60,5 @@ fn create_html(ascii_art: &str, color: bool) -> String {
     }
 
     fs::write("output.html", html).expect("Unable to write HTML file");
+    print!("Image Created, check output.html")
 }
