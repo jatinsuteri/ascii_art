@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use build_html::*;
 use ascii_game_project_j1::{run, AsciiPattern};
 use clap::{ArgAction, Parser};
@@ -11,7 +11,7 @@ use build_html::{HtmlPage, Html};
 struct Args {
     ///provide path
     #[arg(short, long)]
-    path: PathBuf,
+    path: Option<PathBuf>,
     ///color image or b/w
     #[arg(short, long, action = ArgAction::SetTrue)]
     color: bool,  
@@ -24,13 +24,24 @@ struct Args {
     edgedetec:bool,
     #[arg(short,long,action= ArgAction::SetTrue)]
     brighten:bool,
+    #[arg(short,long,action = ArgAction::SetTrue)]
+    video:bool,
+    #[arg(short('k'),long,action = ArgAction::SetTrue)]
+    camera:bool,
 }
 
 fn main() {
     let args = Args::parse();
-    let res = run(&args.path, args.color,args.pattern, args.invert, args.edgedetec, args.brighten);
-
+    let path = match &args.path{
+        Some(p) => p ,
+        None => Path::new(""),
+    };
+    let res = run(&path, args.color,args.pattern, args.invert, args.edgedetec, args.brighten, args.video, args.camera);
+    
     let html = create_html(&res, args.color).to_html_string();
+    fs::write("output.html", html).expect("Unable to write HTML file");
+    print!("Image Created, check output.html");
+}
 
 fn create_html(ascii_art: &str, color: bool) -> String {
         let style = if color {
@@ -59,6 +70,5 @@ fn create_html(ascii_art: &str, color: bool) -> String {
             .to_html_string()
     }
 
-    fs::write("output.html", html).expect("Unable to write HTML file");
-    print!("Image Created, check output.html")
-}
+    
+    

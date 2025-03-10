@@ -9,3 +9,5 @@ clap = { version = "4.5.31", features = ["derive"] }
 build_html = "2.6.0"
 htmlescape = "0.3"
 imageproc = "0.25.0"
+opencv = { version = "0.94.2" }
+term_size = "0.3.2"
